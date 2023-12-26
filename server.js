@@ -5,11 +5,17 @@ import express from "express";
 const app = express();
 import morgan from "morgan";
 
+
+// routers
+import authRouter from './routes/authRouter.js'
+import userRouter from './routes/userRouter.js'
+import contentRouter from './routes/contentRouter.js'
+
 // this creates a morgan logger middleware with 'format' argument set to a string of 'dev' *basically a HTTP LOGGER*
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-app.use(express.json())
+// app.use(express.json())
 
 let notes = [
   { id: 1, content: "HTML is easy", important: true },
@@ -24,6 +30,10 @@ let notes = [
 app.get("/", (req, res) => {
   res.send("<h1>hello world!</h1>");
 });
+
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/content', contentRouter)
 
 app.get("/api/notes", (req, res) => {
   res.json(notes);
