@@ -9,6 +9,7 @@ import morgan from "morgan";
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+app.use(express.json())
 
 let notes = [
   { id: 1, content: "HTML is easy", important: true },
