@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express";
 const app = express();
 import morgan from "morgan";
+import mongoose from 'mongoose'
 
 
 // routers
@@ -15,8 +16,10 @@ import contentRouter from './routes/contentRouter.js'
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-// app.use(express.json())
+app.use(express.json())
 
+
+// DUMMY DATA
 let notes = [
   { id: 1, content: "HTML is easy", important: true },
   { id: 2, content: "Browser can execute only JavaScript", important: false },
@@ -52,6 +55,16 @@ app.get("/api/notes/:id", (req, res) => {
 
 const port = process.env.PORT || 4500;
 
-app.listen(port, () => {
+
+
+try {
+  await mongoose.connect(process.env.MONGO_URL);
+  app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+  
+} catch (error) {
+  console.log(error);
+  process.exit(1);
+  
+}
