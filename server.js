@@ -12,14 +12,14 @@ import authRouter from './routes/authRouter.js'
 import userRouter from './routes/userRouter.js'
 import contentRouter from './routes/contentRouter.js'
 
-// this creates a morgan logger middleware with 'format' argument set to a string of 'dev' *basically a HTTP LOGGER*
+// this creates a morgan logger middleware with 'format' argument set to a string of 'dev' (basically a HTTP LOGGER)
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 app.use(express.json())
 
 
-// DUMMY DATA
+// DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA
 let notes = [
   { id: 1, content: "HTML is easy", important: true },
   { id: 2, content: "Browser can execute only JavaScript", important: false },
@@ -29,6 +29,8 @@ let notes = [
     important: true,
   },
 ];
+//  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA
+
 
 app.get("/", (req, res) => {
   res.send("<h1>hello world!</h1>");
@@ -42,6 +44,7 @@ app.get("/api/notes", (req, res) => {
   res.json(notes);
 });
 
+// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
 app.get("/api/notes/:id", (req, res) => {
   const id = Number(req.params.id);
   const note = notes.find((note) => note.id === id);
@@ -52,6 +55,15 @@ app.get("/api/notes/:id", (req, res) => {
     res.status(404).end();
   }
 });
+
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  notes = notes.filter(note => note.id !== id)
+
+  response.status(204).end()
+})
+
+// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
 
 const port = process.env.PORT || 4500;
 
