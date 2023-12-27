@@ -19,17 +19,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.json())
 
 
-// DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA
-let notes = [
-  { id: 1, content: "HTML is easy", important: true },
-  { id: 2, content: "Browser can execute only JavaScript", important: false },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-];
-//  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA
+
 
 
 app.get("/", (req, res) => {
@@ -44,7 +34,19 @@ app.get("/api/notes", (req, res) => {
   res.json(notes);
 });
 
-// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
+
+// DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA ---- DUMMY DATA
+let notes = [
+  { id: 1, content: "HTML is easy", important: true },
+  { id: 2, content: "Browser can execute only JavaScript", important: false },
+  {
+    id: 3,
+    content: "GET and POST are the most important methods of HTTP protocol",
+    important: true,
+  },
+];
+//  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA  ---- DUMMY DATA
+// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
 app.get("/api/notes/:id", (req, res) => {
   const id = Number(req.params.id);
   const note = notes.find((note) => note.id === id);
@@ -63,11 +65,31 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
+// MONGOOSE MODEL EXAMPLE with persisting data on db operation implemented ---- MONGOOSE MODEL EXAMPLE with persisting data on db operation implemented
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
 
+const Note = mongoose.model('Note', noteSchema)
+
+const note = new Note({
+  content: 'HTML is Easy',
+  important: true,
+})
+
+note.save().then(result => {
+  console.log('note saved!')
+  mongoose.connection.close()
+})
+// MONGOOSE MODEL EXAMPLE with persisting data on db operation implemented ---- MONGOOSE MODEL EXAMPLE with persisting data on db operation implemented
+
+// MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES ---- MIDDLEWARE IMPLEMENTATION EXAMPLES
+
+
+
+// SERVER CONNECTION TO DB
 const port = process.env.PORT || 4500;
-
-
 
 try {
   await mongoose.connect(process.env.MONGO_URL);
