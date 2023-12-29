@@ -3,27 +3,22 @@ import mongoose from 'mongoose';
 
 
 const ContentSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
-    lastName: {
-      type: String,
-      default: 'lastName',
+    productName: String,
+    image: String,
+    description: String,
+    price: {
+      type: Number,
+      default: 0.00,
     },
-    location: {
+    quantity: {
       type: String,
       default: 'my city',
     },
-    role: {
-      type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
-    },
-    avatar: String,
-    avatarPublicId: String,
+    
+    
   });
   
-  UserSchema.methods.toJSON = function () {
+  ContentSchema.methods.toJSON = function () {
     let obj = this.toObject();
     delete obj.password;
     return obj;
