@@ -6,9 +6,9 @@ import { createContent, getAllContent,getSingleContent, updateContent } from '..
 
 router.get('/get-all-content',getAllContent)
 
-router.get('/get-single-content',getSingleContent)
+router.get('/get-single-content/:id',getSingleContent)
 
-router.get('/update-content',updateContent)
+router.patch('/update-content',updateContent)
 
 router.post('/create-new', createContent)
 
