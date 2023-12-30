@@ -37,12 +37,10 @@ export const updateContent = async (req, res) => {
       new: true,
       runValidators: true,
     });
-    res
-      .status(StatusCodes.OK)
-      .json({
-        msg: "content/update-content api router controller endpoint",
-        data: { content },
-      });
+    res.status(StatusCodes.OK).json({
+      msg: "content/update-content api router controller endpoint",
+      data: { content },
+    });
   } catch (err) {
     res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
   }
@@ -56,6 +54,17 @@ export const createContent = async (req, res) => {
     res
       .status(StatusCodes.CREATED)
       .json({ status: "success", data: newContent });
+  } catch (err) {
+    res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
+  }
+};
+
+export const deleteContent = async (req, res) => {
+  try {
+     await ContentModel.findByIdAndDelete(req.params.id)
+    res
+      .status(StatusCodes.NO_CONTENT)
+      .json({ status: "success", data: null });
   } catch (err) {
     res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
   }
