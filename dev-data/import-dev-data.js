@@ -35,6 +35,7 @@ const importData = async()=>{
     try {
         await ContentModel.create(contents);
         console.log('Data Successfully loaded!');
+        process.exit()
     } catch (err) {
         console.log(err);
     }
@@ -47,6 +48,7 @@ const deleteData = async()=>{
     try {
         await ContentModel.deleteMany()
         console.log('Data Successfully Deleted!');
+        process.exit()
     } catch (err) {
         console.log(err);
     }

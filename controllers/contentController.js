@@ -4,8 +4,32 @@ import ContentModel from "../models/ContentModel.js";
 // GET ALL CONTENT
 export const getAllContent = async (req, res) => {
   try {
-    const allContent = await ContentModel.find();
-    res.status(StatusCodes.OK).json({ status: "success", data: allContent });
+    // BUILD QUERY
+    // 1A) Filtering
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "limit", "sort", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+    console.log(req.query, queryObj);
+    console.log("success query log from getAllContent api endpoint");
+    // 1B) Advanced Filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log(JSON.parse(queryStr));
+
+    let query = ContentModel.find(JSON.parse(queryStr));
+    // 2) SORTING
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else{
+        query = query.sort('-createdAt')
+    }
+
+    // EXECUTE QUERY
+    const contents = await query;
+
+    // SEND RESPONSE
+    res.status(StatusCodes.OK).json({ status: "success", data: contents });
   } catch (err) {
     res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
   }
@@ -61,10 +85,8 @@ export const createContent = async (req, res) => {
 
 export const deleteContent = async (req, res) => {
   try {
-     await ContentModel.findByIdAndDelete(req.params.id)
-    res
-      .status(StatusCodes.NO_CONTENT)
-      .json({ status: "success", data: null });
+    await ContentModel.findByIdAndDelete(req.params.id);
+    res.status(StatusCodes.NO_CONTENT).json({ status: "success", data: null });
   } catch (err) {
     res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
   }
