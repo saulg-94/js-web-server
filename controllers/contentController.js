@@ -32,6 +32,19 @@ export const getAllContent = async (req, res) => {
     } else{
         query = query.select('-__v');  // this line excludes the string value is the field-name within mongoDB documents Model schemas'
     }
+
+    // 4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if(req.query.page){
+        const numContents = await ContentModel.countDocuments();
+        if ( skip > numContents) throw  new Error("Page does not exist")
+    }
+
     // EXECUTE QUERY
     const contents = await query;
 
