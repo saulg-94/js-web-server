@@ -74,6 +74,7 @@ export const createContent = async (req, res) => {
   }
 };
 
+// DELETE A SINGLE OBJECT IN DB COLLECTION
 export const deleteContent = async (req, res) => {
   try {
     await ContentModel.findByIdAndDelete(req.params.id);
@@ -82,3 +83,44 @@ export const deleteContent = async (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
   }
 };
+
+
+// Aggregation pipeline: Matching & Grouping
+export const getContentStats = async(req,res)=>{
+
+  try {
+
+    const stats = await ContentModel.aggregate([
+      {
+        $match: { ratingsAverage: {$gte: 4.5}}
+      },
+      {
+        $group:{
+          _id: '$ratingsAverage',
+          numContent: {$sum: 1},
+          numRatings:{$sum:'$ratingQuantity'},
+          avgRating: {$avg: '$ratingsAverage'},
+          avgPrice:{$avg:'$price'},
+          minPrice:{$min:'$price'},
+          maxPrice:{$max:'$price'}
+        },
+      },
+      {
+        $sort:{
+          avgPrice: 1,
+        }
+      },
+      // {
+      //   $match:{_id:{$ne:4.5}}
+      // }
+    ])
+
+    res.status(StatusCodes.OK).json({ status: "success", data: stats });
+    
+  } catch (err) {
+    res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
+
+  }
+
+
+}
