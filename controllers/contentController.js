@@ -1,52 +1,84 @@
 import { StatusCodes } from "http-status-codes";
 import ContentModel from "../models/ContentModel.js";
 
-// GET ALL CONTENT
-export const getAllContent = async (req, res) => {
-  try {
+// TOP RATING ; SORTED BY PRICE
+export const aliasTopContent = async (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "itemName,description,price,ratingsAverage,quantity";
+
+  next();
+};
+
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query, this.queryString = queryString
+  }
+
+  filter() {
     // BUILD QUERY
     // 1A) Filtering
-    const queryObj = { ...req.query };
+    const queryObj = { ...this.queryString };
     const excludedFields = ["page", "limit", "sort", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
-    console.log(req.query, queryObj);
+    
     console.log("success query log from getAllContent api endpoint");
     // 1B) Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
+    
+    
+    this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+    
+  }
 
-    let query = ContentModel.find(JSON.parse(queryStr));
+  sort() {
     // 2) SORTING
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-    } else{
-        query = query.sort('-createdAt')
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(",").join(" ");
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort("-createdAt");
     }
+    return this;
+  }
+
+  limitFields(){
 
     // 3) FIELD Limiting
-    if(req.query.fields){
-        const fields = req.query.fields.split(',').join(' ')
-        query = query.select(fields)
-    } else{
-        query = query.select('-__v');  // this line excludes the string value is the field-name within mongoDB documents Model schemas'
-    }
+    if (this.queryString.fields) {
+        const fields = this.queryString.fields.split(",").join(" ");
+        this.query = this.query.select(fields);
+      } else {
+        this.query = this.query.select("-__v"); // this line excludes the string value is the field-name within mongoDB documents Model schemas'
+      }
+
+
+    return this;
+  }
+
+  paginate(){
 
     // 4) Pagination
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
+    const page = this.queryString.page * 1 || 1;
+    const limit = this.queryString.limit * 1 || 100;
     const skip = (page - 1) * limit;
 
-    query = query.skip(skip).limit(limit);
+    this.query = this.query.skip(skip).limit(limit);
 
-    if(req.query.page){
-        const numContents = await ContentModel.countDocuments();
-        if ( skip > numContents) throw  new Error("Page does not exist")
-    }
 
-    // EXECUTE QUERY
-    const contents = await query;
+    return this;
+  }
+}
+
+// GET ALL CONTENT
+export const getAllContent = async (req, res) => {
+  try {
+ 
+    const features = new APIFeatures(ContentModel.find(), req.query).filter().sort().limitFields().paginate();
+
+    const contents = await features.query;
 
     // SEND RESPONSE
     res.status(StatusCodes.OK).json({ status: "success", data: contents });
