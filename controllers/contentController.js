@@ -25,6 +25,13 @@ export const getAllContent = async (req, res) => {
         query = query.sort('-createdAt')
     }
 
+    // 3) FIELD Limiting
+    if(req.query.fields){
+        const fields = req.query.fields.split(',').join(' ')
+        query = query.select(fields)
+    } else{
+        query = query.select('-__v');  // this line excludes the string value is the field-name within mongoDB documents Model schemas'
+    }
     // EXECUTE QUERY
     const contents = await query;
 
