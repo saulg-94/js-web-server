@@ -124,3 +124,24 @@ export const getContentStats = async(req,res)=>{
 
 
 }
+
+export const getMonthlyPlan = async (req,res)=>{
+  try {
+    const extraField = req.params.year * 1  ;
+
+    const plan = await ContentModel.aggregate([
+      {
+        $unwind: '$images'
+      }
+      // can continue to add operators that are available (check docs MongoDB / Mongoose)
+      // Example:  {$match:{$gte: new Date(`${year}-01-01`),$lte: new Date(`${year}-01-01`)}}
+      // REFERENCE Aggregation Pipeline: Unwinding and Projecting  --->https://www.mongodb.com/docs/manual/reference/operator/aggregation/unwind/   --->https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/learn/lecture/15065104#overview
+    ]);
+
+    res.status(StatusCodes.OK).json({ status: "success", data: plan });
+
+  } catch (err) {
+    res.status(StatusCodes.BAD_REQUEST).json({ status: "fail", msg: err });
+
+  }
+}
