@@ -39,24 +39,38 @@ ContentSchema.virtual('divideByTwo').get(function(){
 
 
 // [[MongoDB]] DOCUMENT MIDDLEWARE: runs before .save() and .create()
-ContentSchema.pre('save', function(next){
-  console.log('changes can be made here to the object/document OR things can happen here thru a chain of .pre and .post middleware REFERENCE MongoDB Documentation ');
-  console.log(this);
-  next()
-})
+// ContentSchema.pre('save', function(next){
+//   console.log('changes can be made here to the object/document OR things can happen here thru a chain of .pre and .post middleware REFERENCE MongoDB Documentation ');
+//   console.log(this);
+//   next()
+// })
 
-ContentSchema.pre('save', function(next){
-  console.log('Will save document...');
-  next()
-})
+// ContentSchema.pre('save', function(next){
+//   console.log('Will save document...');
+//   next()
+// })
 
-ContentSchema.post('save', function(doc,next){
-  console.log(doc);
-  console.log('this executes after the pre MIDDLEWARE');
-  next()
-})
+// ContentSchema.post('save', function(doc,next){
+//   console.log(doc);
+//   console.log('this executes after the pre MIDDLEWARE');
+//   next()
+// })
 
+// [[MongoDB]] QUERY MIDDLEWARE:
+// ContentSchema.pre(/^find/,function(next){
+//   console.log(this);
+//   next()
+// })
 
+// [[MongoDB]] AGGREGATION MIDDLEWARE:
+// ContentSchema.pre('aggregate', function(next){
+//   // can chain match operators here Ex: (below)
+//   // this.pipeline().unshift({ $match: {}})
+//   console.log(this.pipeline());
+//   next()
+// })
+
+//Ignore this below
 // ContentSchema.methods.toJSON = function () {
 //   let obj = this.toObject();
 //   delete obj.password;
