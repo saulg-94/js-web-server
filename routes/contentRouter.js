@@ -2,13 +2,14 @@ import {Router} from 'express'
 const router = Router();
 
 
-import { aliasTopContent, createContent, deleteContent, getAllContent,getContentStats,getSingleContent, updateContent } from '../controllers/contentController.js';
+import { aliasTopContent, createContent, deleteContent, getAllContent,getContentStats,getMonthlyPlan,getSingleContent, updateContent } from '../controllers/contentController.js';
 
 router.route('/top-cheap').get( aliasTopContent ,getAllContent)
 
 router.route('/content-stats').get(getContentStats)
+router.route('/monthly-plan').get(getMonthlyPlan)
 
-router.get('/get-all-content',getAllContent)
+router.get('/all-content',getAllContent)
 
 router.get('/get-single-content/:id',getSingleContent)
 
