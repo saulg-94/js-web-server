@@ -31,7 +31,8 @@ const ContentSchema = new mongoose.Schema({
 
 
 //Virtual properties should be utilized to seperate 'buisness logic'->(ContentModel.js) AWAY from 'application logic'->(contentController.js)
-//The result or value of this virtual field 'divideByTwo' can not be used by the database because it is not stored in DB
+//The field name of the result or value of this virtual field (in this case)->'divideByTwo' can not be used by the database because it is not stored in DB
+//But the value can be used in specific use cases (ex: displaying the results to UI for data anaylsis purposes)
 ContentSchema.virtual('divideByTwo').get(function(){
   return this.quantity / 2;
 });
