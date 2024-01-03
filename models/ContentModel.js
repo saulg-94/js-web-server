@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 
 const ContentSchema = new mongoose.Schema({
-  itemName: { type: String, trim:true },
+  itemName: { type: String, trim:true, required:[true,'An item must have a name'],minlength:[3,'Must have more or equal to 3 characters'] },
   imageCover: String,
   images: [String],
   description: String,
   extraField:[String],
+  exampleField:{type: String,enum:{values:['option1','option2','option3'],message:'This example field allows for only a specified options',default:'option1'}},
   price: {
     type: Number,
     default: 0.0,
   },
-  ratingsAverage: { type: Number, default: 4.5 },
+  ratingsAverage: { type: Number, default: 4.5,min:[1,'Rating must be above or equal 1'],max:[5,'Rating must be below or equal to 5'] },
   ratingQuantity: { type: Number, default: 0 },
   quantity: {
     type: Number,
