@@ -70,11 +70,5 @@ ContentSchema.virtual('divideByTwo').get(function(){
 //   next()
 // })
 
-//Ignore this below
-// ContentSchema.methods.toJSON = function () {
-//   let obj = this.toObject();
-//   delete obj.password;
-//   return obj;
-// };
 
 export default mongoose.model("Content", ContentSchema);
