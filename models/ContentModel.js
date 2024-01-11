@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import validator from "validator"
+
 const ContentSchema = new mongoose.Schema(
   {
     itemName: {
@@ -7,6 +9,7 @@ const ContentSchema = new mongoose.Schema(
       trim: true,
       required: [true, "An item must have a name"],
       minlength: [3, "Must have more or equal to 3 characters"],
+      // validate: [validator.isAlpha, "Content name must only contain characters"] <--- does not work practically for general naming field
     },
     imageCover: String,
     images: [String],
